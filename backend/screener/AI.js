@@ -6,7 +6,7 @@ const NodeCache = require('node-cache');
 const app = express();
 
 // Configuration
-const openaiKey = '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';
+const openaiKey = '';
 const openaiUrl = 'https://api.openai.com/v1/engines/gpt-3.5-turbo/completions';
 const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
 
@@ -40,7 +40,7 @@ app.post('/analyze-news', async (req, res) => {
     };
 
     const headers = {
-        'Authorization': Bearer ${"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"},
+        'Authorization': ''},
         'Content-Type': 'application/json'
     };
 
