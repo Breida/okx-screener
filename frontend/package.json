@@ -1,7 +1,7 @@
 {
   "name": "okx-screener",
-  "version": "0.0.1",
-  "description": "A Quasar Project",
+  "version": "1.0.0",
+  "description": "A web interface for visualizing and analyzing cryptocurrency market data from OKX, including charts and key metrics.",
   "productName": "OKX Screener",
   "author": "Victar Brieda",
   "private": true,

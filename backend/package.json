@@ -1,7 +1,7 @@
 {
   "name": "okx-screener-backend",
   "version": "1.0.0",
-  "description": "Backend for OKX cryptocurrency screener",
+  "description": "A backend service for fetching, processing, and storing cryptocurrency market data from the OKX exchange for analytical purposes.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
