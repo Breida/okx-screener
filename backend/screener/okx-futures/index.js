@@ -1,6 +1,5 @@
-const tickers = require('./tickers')
-const Screener = require('./Screener')
-
+const tickers = require('./tickers');
+const Screener = require('./Screener');
 
 let screeners = []
 let screenerData = []

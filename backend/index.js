@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 
 const screener = require('./screener')
 const routes = require('./routes')
+const {analyzeNews} = require('./ai-news-analyzer/ai-analyzer')
 
 const app = express()
 app.use(cors())
@@ -16,7 +17,7 @@ const {APP_PORT, APP_IP, DATABASE_CONNECTION_URI} = process.env
 
 const start = async () => {
     try {
-        await mongoose
+        /*await mongoose
             .connect(DATABASE_CONNECTION_URI)
             .then(async () => {
                 console.log('Mongo connected...')
@@ -32,10 +33,19 @@ const start = async () => {
                 setTimeout(() => {
                     start()
                 }, 1000 * 10)
-            })
+            });
+        */
+
+        analyzeNews('OKX announces new token listing. High trading volumes expected.')
+            .then((result) => console.log(result))
+            .catch((err) => console.error(err));
+
+        analyzeNews('This is a random text about a cooking recipe.')
+            .then((result) => console.log(result))
+            .catch((err) => console.error(err));
 
     } catch (err) {
-        throw err
+        throw err;
     }
 }
 

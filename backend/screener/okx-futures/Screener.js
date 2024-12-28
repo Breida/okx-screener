@@ -174,5 +174,4 @@ class Screener {
     }
 }
 
-
 module.exports = Screener
