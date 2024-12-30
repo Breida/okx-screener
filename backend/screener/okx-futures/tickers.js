@@ -1,24 +1,18 @@
-const okx = require('okx-api')
+const okx = require('okx-api');
 
-
-const client = new okx.RestClient()
-
+const client = new okx.RestClient();
 
 const getFuturesTickers = async () => {
     try {
-        const result = await client.getTickers(
-            'SWAP' // 'SPOT' | 'MARGIN' | 'SWAP' | 'FUTURES' | 'OPTION'
-        )
-        console.log('OKX FUTURES tickers length: ', result.length)
-        return result
+        const result = await client.getTickers('SWAP');
+        console.log('OKX FUTURES tickers length: ', result.length);
+
+        return result;
     } catch (e) {
-        console.log(e.message)
-        return getFuturesTickers()
+        console.log('Error happened during spot tickers procession:', e.message);
+        return getFuturesTickers();
     }
 
 }
 
-
-module.exports = {
-    getFuturesTickers
-}
+module.exports = { getFuturesTickers }

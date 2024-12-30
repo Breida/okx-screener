@@ -25,7 +25,7 @@ const start = async () => {
                 await screener.start();
 
                 app.listen(APP_PORT, () => {
-                    console.log('server started...')
+                    console.log(`Server started at ${APP_PORT}`);
                 });
             })
             .catch(err => {

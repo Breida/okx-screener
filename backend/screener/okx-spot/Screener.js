@@ -1,37 +1,36 @@
-const okx = require('okx-api')
-const ta = require('../ta')
-
+const okx = require('okx-api');
+const ta = require('../tech-analysis');
 
 class Screener {
-    coin = ''
-    symbol = ''
-    price = 0
-    open24h = 0
-    volume = 0
-    quoteVolume = 0
-    founding = ''
-    candles_1m = []
-    candles_5m = []
-    wsClient
-    restClient
+    coin = '';
+    symbol = '';
+    price = 0;
+    open24h = 0;
+    volume = 0;
+    quoteVolume = 0;
+    founding = '';
+    candles_1m = [];
+    candles_5m = [];
+    wsClient;
+    restClient;
 
     constructor(symbol) {
-        this.wsClient = new okx.WebsocketClient({market: 'prod'})
-        this.restClient = new okx.RestClient()
-        this.symbol = symbol
-        this.coin = symbol.split('-')?.[0]
+        this.wsClient = new okx.WebsocketClient({market: 'prod'});
+        this.restClient = new okx.RestClient();
+        this.symbol = symbol;
+        this.coin = symbol.split('-')?.[0];
     }
 
     async init () {
         try {
-            this.candles_1m = await this.getCandles('1m', 100)
-            this.candles_5m = await this.getCandles('5m', 100)
-            this.candles_1m.reverse()
-            this.candles_5m.reverse()
-            this.startStream()
-            return true
+            this.candles_1m = await this.getCandles('1m', 100);
+            this.candles_5m = await this.getCandles('5m', 100);
+            this.candles_1m.reverse();
+            this.candles_5m.reverse();
+            this.startStream();
+            return true;
         } catch (e) {
-            return false
+            return false;
         }
     }
 
@@ -175,5 +174,4 @@ class Screener {
     }
 }
 
-
-module.exports = Screener
+module.exports = Screener;

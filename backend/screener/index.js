@@ -4,7 +4,6 @@ const liquidations = require('./liquidations');
 
 const start = async () => {
     await liquidations.startLiquidationsStream();
-
     await okxFutures.start();
     await okxSpot.start();
 }

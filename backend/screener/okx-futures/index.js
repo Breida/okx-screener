@@ -6,20 +6,19 @@ let screenerData = [];
 const getScreenerData = () => screenerData || [];
 
 const start = async () => {
-    const fTickers = await tickers.getFuturesTickers();
+    const futuresTickers = await tickers.getFuturesTickers();
 
-    for (const i in fTickers) {
-        const ticker = fTickers[i];
+    for (const ticker of futuresTickers) {
         const screener = new Screener(ticker.instId);
-        const isInit = await screener.init();
+        const isScreenerInitialized = await screener.init();
 
-        if (isInit) {
+        if (isScreenerInitialized) {
             screeners.push(screener);
         }
     }
 
     setInterval(() => {
-        screenerData = screeners.map(i => i.getTickerData()) || []
+        screenerData = screeners.map(i => i.getTickerData()) || [];
     }, 1000 * 2);
 }
 
