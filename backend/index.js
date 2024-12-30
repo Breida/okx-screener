@@ -1,50 +1,43 @@
-require('dotenv').config()
+require('dotenv').config();
 
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 
-const screener = require('./screener')
-const routes = require('./routes')
-const {analyzeNews} = require('./ai-news-analyzer/ai-analyzer')
+const screener = require('./screener');
+const routes = require('./routes');
+const aiNewsAnalyzer = require('./ai-news-analyzer');
 
-const app = express()
-app.use(cors())
+const app = express();
+app.use(cors());
 
-app.use('/api/v1', routes)
+app.use('/api/v1', routes);
 
 const {APP_PORT, APP_IP, DATABASE_CONNECTION_URI} = process.env
 
 const start = async () => {
     try {
-        /*await mongoose
-            .connect(DATABASE_CONNECTION_URI)
+        await mongoose.connect(DATABASE_CONNECTION_URI)
             .then(async () => {
-                console.log('Mongo connected...')
+                console.log('Mongodb connected...')
+                aiNewsAnalyzer.startNewsProcession();
 
-                await screener.start()
+                await screener.start();
 
                 app.listen(APP_PORT, () => {
                     console.log('server started...')
-                })
+                });
             })
             .catch(err => {
-                console.log(err)
+                console.log('Error happened during work of application. Restarting system.', err);
+
                 setTimeout(() => {
-                    start()
-                }, 1000 * 10)
+                    start();
+                }, 1000 * 10);
             });
-        */
-
-        analyzeNews('OKX announces new token listing. High trading volumes expected.')
-            .then((result) => console.log(result))
-            .catch((err) => console.error(err));
-
-        analyzeNews('This is a random text about a cooking recipe.')
-            .then((result) => console.log(result))
-            .catch((err) => console.error(err));
-
     } catch (err) {
+        console.log('Error happened during starting of application. Shutting down.', err);
+
         throw err;
     }
 }

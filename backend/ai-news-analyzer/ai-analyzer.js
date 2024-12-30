@@ -3,7 +3,7 @@ require('dotenv').config();
 const { OpenAI } = require('openai');
 const { z } = require('zod');
 const { zodResponseFormat } = require('openai/helpers/zod');
-const { OPENAI_API_KEY } = process.env;
+const { OPENAI_API_KEY, OPENAI_AI_MODEL } = process.env;
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY
@@ -19,7 +19,7 @@ const responseSchema = z.object({
 async function analyzeNews(newsText) {
   try {
     const response = await openai.beta.chat.completions.parse({
-      model: 'gpt-4o-mini-2024-07-18',
+      model: OPENAI_AI_MODEL,
       messages: [
         {
           role: 'system',
@@ -41,10 +41,10 @@ async function analyzeNews(newsText) {
       response_format: zodResponseFormat(responseSchema, 'newsAnalysis'),
     });
 
-    console.log('Validated response:', response.choices[0]);
     return response.choices[0].message.parsed;
   } catch (error) {
     console.error('Error while analyzing the news:', error.message);
+
     throw error;
   }
 }

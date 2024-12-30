@@ -1,14 +1,13 @@
-const okx = require('okx-api')
-const models = require('./models')
-
+const okx = require('okx-api');
+const models = require('./models');
 
 const startLiquidationsStream = () => {
-    const client = new okx.WebsocketClient({market: 'prod'})
+    const client = new okx.WebsocketClient({market: 'prod'});
 
     client.subscribe({
         channel: 'liquidation-orders',
         'instType': 'SWAP'
-    })
+    });
 
     client.on('update', (eventData) => {
         setTimeout(() => {
@@ -32,11 +31,10 @@ const startLiquidationsStream = () => {
     })
 }
 
-
 const getLiquidations = async (symbol, timeFrom) => {
-    const liquidations = await models.Liquidation.find({symbol, time: {$gt: timeFrom}})
+    const liquidations = await models.Liquidation.find({symbol, time: {$gt: timeFrom}});
 
-    return liquidations || []
+    return liquidations || [];
 }
 
 module.exports = {

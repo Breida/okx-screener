@@ -1,6 +1,5 @@
-const Liquidation = require('./Liquidation')
-
+const Liquidation = require('./Liquidation');
 
 module.exports = {
     Liquidation
-}
+};

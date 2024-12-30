@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model } = require('mongoose');
 
 const schema = new Schema({
     symbol: { type: String },
@@ -7,6 +7,6 @@ const schema = new Schema({
     size: { type: Number },
     side: { type: String },
     exchange: { type: String },
-})
+});
 
-module.exports = model('Liquidation', schema)
+module.exports = model('Liquidation', schema);
