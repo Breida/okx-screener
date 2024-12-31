@@ -15,8 +15,8 @@ export const useOKXSpotStore = defineStore('OKXSpotStore', () => {
     return axios
       .get(config.okxServerUrl + '/api/v1/okx-spot-tickers')
       .then(res => res.data.filter((i: Ticker) => i.symbol.includes('USDT')))
-      .catch(err => {
-        console.log(err)
+      .catch(error => {
+        console.log('Error fetching tickers:', error.message)
         return []
       })
   }

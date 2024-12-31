@@ -12,18 +12,16 @@ export const useOKXFuturesStore = defineStore('OKXFuturesStore', () => {
   }
 
   const getTickers = async () => {
-    return axios
-      .get(config.okxServerUrl + '/api/v1/okx-futures-tickers')
+    return axios.get(`${config.okxServerUrl}/api/v1/okx-futures-tickers`)
       .then(res => res.data.filter((i: Ticker) => i.symbol.includes('USDT')))
-      .catch(err => {
-        console.log(err)
+      .catch(error => {
+        console.log('Error fetching tickers:', error.message)
         return []
       })
   }
 
   return {
     tickers,
-
     init
   }
 })
