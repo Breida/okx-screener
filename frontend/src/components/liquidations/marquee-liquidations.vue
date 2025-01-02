@@ -1,27 +1,50 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
+import { ref, onMounted, watch, PropType } from 'vue'
 import { Liquidation } from 'src/models/Liquidation'
 
-defineProps({
+const props = defineProps({
   liquidations: {
     type: Array as PropType<Liquidation[]>,
     required: true
   }
 })
+
+const marqueeContentRef = ref<HTMLElement | null>(null)
+
+const calculateAnimationDuration = () => {
+  if (marqueeContentRef.value) {
+    const liquidationCount = props.liquidations.length
+    const baseSpeedPerItem = 4
+    const minDuration = 20
+    const duration = Math.max(minDuration, liquidationCount * baseSpeedPerItem)
+
+    marqueeContentRef.value.style.animationDuration = `${duration}s`
+    console.log(`Duration: ${duration}s`)
+  }
+}
+
+onMounted(() => {
+  calculateAnimationDuration()
+})
+
+watch(() => props.liquidations, () => {
+  calculateAnimationDuration()
+})
+
 </script>
 
 <template>
   <div class="marquee-container">
-    <div class="marquee-content">
+    <div class="marquee-content" ref="marqueeContentRef">
       <span
         v-for="liquidation in liquidations"
         :key="liquidation.id"
         :class="{
           'text-green': liquidation.side === 'LONG',
-          'text-red': liquidation.side === 'SHORT'
+          'text-red': liquidation.side === 'SHORT',
         }"
       >
-        {{ liquidation.symbol }} {{ liquidation.side }} ${{ liquidation.size }} at ${{ liquidation.price }} |
+         {{ liquidation.symbol }} {{ liquidation.side }} ${{ Math.trunc(liquidation.size * liquidation.price) }} at ${{ liquidation.price }}  |
       </span>
     </div>
   </div>
@@ -32,14 +55,15 @@ defineProps({
   overflow: hidden
   white-space: nowrap
   position: relative
-  flex: 1
+  flex: 6
+  font-size: 18px
   margin-left: 20px
 
 .marquee-content
   display: inline-block
-  padding-left: 100%
-  animation: marquee 15s linear infinite
   white-space: nowrap
+  padding-left: 100%
+  animation: marquee linear infinite
 
 .text-green
   color: green

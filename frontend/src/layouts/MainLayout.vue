@@ -9,11 +9,12 @@
         <!--        <q-toolbar-title class="text-uppercase fw-900 text-primary">-->
         <!--          COINSCANRRC-->
         <!--        </q-toolbar-title>-->
-        <q-toolbar-title class="text-uppercase fw-900 text-primary">
-          Screener
+        <q-toolbar-title class="text-uppercase fw-900 text-primary" style="min-width: 240px;">
+          Okx Screener |
         </q-toolbar-title>
 
-        <MarqueeLiquidations :liquidations="liquidations" />
+          <MarqueeLiquidations :liquidations="liquidations"/>
+
       </q-toolbar>
     </q-header>
 
@@ -30,7 +31,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import LeftDrawer from 'components/left-drawer.vue'
 import logo from 'src/assets/logo.svg'
 import { useLiquidationsStore } from 'src/components/liquidations/store'
@@ -42,12 +43,24 @@ export default {
     const logoSrc = logo
     const leftDrawerOpen = ref(false)
     const liquidationsStore = useLiquidationsStore()
+    const intervalId = ref(null)
 
     onMounted(async () => {
       await liquidationsStore.loadLiquidations('', Date.now() - 60000)
+
+      intervalId.value = setInterval(() => {
+        liquidationsStore.loadLiquidations('', Date.now() - 60000)
+      }, 60000)
     })
 
-    const liquidations = liquidationsStore.liquidations
+    onUnmounted(() => {
+      if (intervalId.value) {
+        clearInterval(intervalId.value)
+        intervalId.value = null
+      }
+    })
+
+    const liquidations = computed(() => liquidationsStore.liquidations.filter(x => x.price * x.size > 10))
 
     return {
       leftDrawerOpen,
