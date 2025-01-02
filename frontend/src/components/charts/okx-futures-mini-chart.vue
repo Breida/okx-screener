@@ -288,7 +288,7 @@ const createOrderLines = async () => {
 
 const getOrders = async () => {
   const restClient = new RestClient()
-  const result = await restClient.getOrderBook(props.ticker?.symbol, '5000')
+  const result = await restClient.getFullOrderBook({ instId: props.ticker?.symbol, sz: '5000' })
   if (result[0]) {
     return {
       asks: result[0].asks,
