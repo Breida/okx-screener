@@ -28,6 +28,11 @@ const startLiquidationsStream = () => {
 }
 
 const getLiquidations = async (symbol, timeFrom) => {
+
+    if (!symbol) {
+        return models.Liquidation.find({time: {$gt: timeFrom}});
+    }
+
     return models.Liquidation.find({symbol, time: {$gt: timeFrom}});
 }
 

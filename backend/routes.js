@@ -14,12 +14,9 @@ router.get('/okx-spot-tickers', async (req, res) => {
 
 router.get('/liquidations', async (req, res) => {
     const query = req.query;
-    if (!query?.symbol) {
-       return res.json({ error: `'symbol' parameter is required.` });
-    }
 
     if (!query?.timeFrom) {
-        return res.json({ error: `'timeFrom' parameter is required.` });
+        return res.status(400).json({ error: `'timeFrom' parameter is required.` });
     }
 
     const result = await liquidations.getLiquidations(query.symbol, parseInt(query.timeFrom));
@@ -31,7 +28,7 @@ router.get('/liquidations', async (req, res) => {
 router.get('/analyzed-news', async (req, res) => {
     const query = req.query;
     if (!query?.last) {
-        return res.json({ error: `'last' parameter is required.` });
+        return res.status(400).json({ error: `'last' parameter is required.` });
     }
 
     const analyzedNews = await aiNewsAnalyzer.getLastNews(query.last);

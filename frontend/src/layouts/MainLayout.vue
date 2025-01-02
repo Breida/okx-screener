@@ -1,19 +1,19 @@
 <template>
   <q-layout view="hHh lpR fFf">
-
     <q-header class="bg-transparent text-white" bordered>
       <q-toolbar>
         <q-btn dense flat icon="menu" @click="toggleLeftDrawer" />
 
-<!--        <q-img :src="logoSrc" class="app-logo"/>-->
+        <!--        <q-img :src="logoSrc" class="app-logo"/>-->
 
-<!--        <q-toolbar-title class="text-uppercase fw-900 text-primary">-->
-<!--          COINSCANRRC-->
-<!--        </q-toolbar-title>-->
+        <!--        <q-toolbar-title class="text-uppercase fw-900 text-primary">-->
+        <!--          COINSCANRRC-->
+        <!--        </q-toolbar-title>-->
         <q-toolbar-title class="text-uppercase fw-900 text-primary">
           Screener
         </q-toolbar-title>
 
+        <MarqueeLiquidations :liquidations="liquidations" />
       </q-toolbar>
     </q-header>
 
@@ -30,19 +30,29 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import LeftDrawer from 'components/left-drawer.vue'
 import logo from 'src/assets/logo.svg'
+import { useLiquidationsStore } from 'src/components/liquidations/store'
+import MarqueeLiquidations from 'src/components/liquidations/marquee-liquidations.vue'
 
 export default {
-  components: { LeftDrawer },
+  components: { LeftDrawer, MarqueeLiquidations },
   setup () {
     const logoSrc = logo
     const leftDrawerOpen = ref(false)
+    const liquidationsStore = useLiquidationsStore()
+
+    onMounted(async () => {
+      await liquidationsStore.loadLiquidations('', Date.now() - 60000)
+    })
+
+    const liquidations = liquidationsStore.liquidations
 
     return {
       leftDrawerOpen,
       logoSrc,
+      liquidations,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }

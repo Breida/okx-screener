@@ -24,6 +24,8 @@ async function analyzeNews(newsText) {
         {
           role: 'system',
           content: `You are a cryptocurrency news analyst. Analyze the given text to determine if it is related to financial markets or cryptocurrency news. 
+In "summary" I need only Ticker of a coin ($XXX) and keywords within 1 sentence. 
+If there is no specific Coin print "ALL" 
           If the text is unrelated or not a valid news article, return {"isValid": false}. 
           Otherwise, analyze the news and return the following JSON schema:
           {
@@ -31,7 +33,13 @@ async function analyzeNews(newsText) {
             "impact": "positive" | "negative",
             "importance": 1-3,
             "summary": "string"
-          }`,
+          }
+New strength equals percentage of change on a cryptocurrency within a minute. 
+1 - is less then 1%
+2 - is more than 5%
+3 - is more than 10% 
+If a coin is listed on Upbit | Coinbase | Binance it's 3
+Be more strict about Importance and say 2 or 3 to really significant events`,
         },
         {
           role: 'user',

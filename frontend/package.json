@@ -12,11 +12,12 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@quasar/extras": "^1.16.4",
     "@types/numeral": "^2.0.5",
-    "EventEmitter": "^1.0.0",
     "axios": "^1.2.1",
     "dayjs": "^1.11.0",
+    "EventEmitter": "^1.0.0",
     "events": "^3.3.0",
     "lightweight-charts": "^3.8.0",
     "numeral": "^2.0.6",

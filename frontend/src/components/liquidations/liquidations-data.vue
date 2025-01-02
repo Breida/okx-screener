@@ -59,7 +59,7 @@ watch(currentTickerSymbol, async () => {
 <template>
 <div class="liquidations">
   <div class="">
-    <span>Liquidations: <span class="q-pa-xs fw-900 q-ml-xs">{{ liquidationsUsdTotal }}</span></span>
+    <span>Total liquidations: <span class="q-pa-xs fw-900 q-ml-xs">{{ liquidationsUsdTotal }}</span></span>
     <span class="text-positive q-pa-xs q-ml-xs text-bold">LONGS {{ longsPercent ? longsPercent.toFixed(2) : '0' }}%</span>
     <span class="text-negative q-pa-xs q-ml-xs text-bold">SHORTS {{ shortsPercent ? shortsPercent.toFixed(2) : '0' }}%</span>
   </div>
