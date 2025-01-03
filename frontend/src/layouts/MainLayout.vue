@@ -60,7 +60,7 @@ export default {
       }
     })
 
-    const liquidations = computed(() => liquidationsStore.liquidations.filter(x => x.price * x.size > 10))
+    const liquidations = computed(() => liquidationsStore.liquidations.filter(x => x.price * x.size > 20000))
 
     return {
       leftDrawerOpen,

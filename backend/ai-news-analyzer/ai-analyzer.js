@@ -23,7 +23,7 @@ async function analyzeNews(newsText) {
       messages: [
         {
           role: 'system',
-          content: `You are a cryptocurrency news analyst. Analyze the given text to determine if it is related to financial markets or cryptocurrency news. 
+          content: `Use english. You are a cryptocurrency news analyst. Analyze the given text to determine if it is related to financial markets or cryptocurrency news. 
 In "summary" I need only Ticker of a coin ($XXX) and keywords within 1 sentence. 
 If there is no specific Coin print "ALL" 
           If the text is unrelated or not a valid news article, return {"isValid": false}. 
