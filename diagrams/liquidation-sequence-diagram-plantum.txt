@@ -1,0 +1,34 @@
+@startuml
+participant "OKX WebSocket" as OKXWS
+participant "Backend" as Backend
+participant "Database (Liquidation)" as Database
+participant "Frontend" as Frontend
+
+== WebSocket Connection and Data Reception ==
+OKXWS -> Backend : Connect to WebSocket (Liquidation Orders)
+Backend -> Backend : Subscribe to liquidation events
+OKXWS --> Backend : Send liquidation data
+
+== Processing Liquidation Data ==
+Backend -> Backend : Parse and validate liquidation data
+Backend -> Database : Save liquidation data using Liquidation model
+Database --> Backend : Confirm save
+
+== Frontend Requests Liquidations ==
+Frontend -> Backend : GET /api/v1/liquidations?timeFrom=timestamp&symbol=BTC
+Backend -> Database : Query liquidation data (filtered by time and symbol)
+Database --> Backend : Return filtered liquidation data
+Backend --> Frontend : Send liquidation data as JSON
+
+== Real-Time Updates to Frontend ==
+alt Frontend uses periodic polling
+    loop Every few seconds
+        Frontend -> Backend : GET /api/v1/liquidations?timeFrom=timestamp
+        Backend -> Database : Query latest liquidation data
+        Database --> Backend : Return data
+        Backend --> Frontend : Send data
+    end
+else Frontend subscribes to WebSocket (if implemented)
+    Backend -> Frontend : Push new liquidation data via WebSocket
+end
+@enduml

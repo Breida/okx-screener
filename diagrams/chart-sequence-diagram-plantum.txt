@@ -1,0 +1,36 @@
+@startuml
+participant "OKX REST API" as OKXAPI
+participant "OKX WebSocket" as OKXWS
+participant "Liquidations Module" as Liquidations
+participant "Frontend" as Frontend
+
+== Initialization ==
+Frontend -> Backend : Initialize screener for a symbol
+Backend -> OKXAPI : GET /candles (1m/5m, limit=100)
+OKXAPI --> Backend : Return historical 1m/5m candles
+Backend -> Backend : Reverse candles (1m, 5m)
+Backend -> OKXWS : Start WebSocket streams
+
+== WebSocket Subscriptions ==
+Backend -> OKXWS : Subscribe to channels (tickers, candle1m, candle5m)
+OKXWS --> Backend : Push ticker update
+Backend -> Backend : Update price, volume, quote volume
+
+OKXWS --> Backend : Push candle1m update
+Backend -> Backend : Compare and update candles_1m
+
+OKXWS --> Backend : Push candle5m update
+Backend -> Backend : Compare and update candles_5m
+
+== Fetch Ticker Data ==
+Frontend -> Backend : GET /okx-futures-tickers or GET /okx-spot-tickers
+Backend -> Backend : Compute ATR (1m, 5m)
+Backend -> Backend : Compute pivot points (1m, 5m)
+Backend --> Frontend : Return JSON
+
+Frontend -> Backend : GET /liquidations?timeFrom=timestamp
+Backend -> Liquidations : Get liquidations (symbol, timeFrom)
+Liquidations --> Backend : Return liquidation data
+Backend --> Frontend : Return JSON
+
+@enduml

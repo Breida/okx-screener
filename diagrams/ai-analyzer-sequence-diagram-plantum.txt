@@ -1,0 +1,48 @@
+@startuml
+actor User
+participant "News UI" as NewsUI
+participant "Backend API" as BackendAPI
+participant "Telegram Client" as TelegramClient
+participant "AI Analyzer" as AIAnalyzer
+participant "Database" as Database
+
+== User triggers news loading ==
+User -> NewsUI : Opens the AI News Analyst component
+NewsUI -> BackendAPI : GET /api/v1/analyzed-news?last=3
+BackendAPI -> Database : Fetch latest 3 analyzed news
+Database --> BackendAPI : Returns news data
+BackendAPI --> NewsUI : Returns news list
+
+== Regular news updates ==
+loop Every 60 seconds
+    NewsUI -> BackendAPI : GET /api/v1/analyzed-news?last=3
+    BackendAPI -> Database : Fetch latest 3 analyzed news
+    Database --> BackendAPI : Returns news data
+    BackendAPI --> NewsUI : Returns news list
+end
+
+== Telegram news processing pipeline ==
+TelegramClient -> BackendAPI : Receives new message
+BackendAPI -> Database : Check if message exists (by ID)
+alt Message exists
+    BackendAPI --> TelegramClient : Skip processing
+else New message
+    BackendAPI -> AIAnalyzer : Analyze message content
+    AIAnalyzer -> AIAnalyzer : Validate and process news text
+    AIAnalyzer --> BackendAPI : Return analysis result
+    BackendAPI -> Database : Save analyzed news
+end
+
+== Historical messages processing ==
+TelegramClient -> BackendAPI : Fetch channel history (e.g., last 20 messages)
+loop For each message
+    BackendAPI -> Database : Check if message exists
+    alt Message exists
+        BackendAPI --> TelegramClient : Skip processing
+    else New message
+        BackendAPI -> AIAnalyzer : Analyze message content
+        AIAnalyzer --> BackendAPI : Return analysis result
+        BackendAPI -> Database : Save analyzed news
+    end
+end
+@enduml
