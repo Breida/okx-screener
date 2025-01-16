@@ -4,6 +4,7 @@ const { OpenAI } = require('openai');
 const { z } = require('zod');
 const { zodResponseFormat } = require('openai/helpers/zod');
 const { OPENAI_API_KEY, OPENAI_AI_MODEL } = process.env;
+const logger = require('../logger');
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY
@@ -50,10 +51,13 @@ Be more strict about Importance and say 2 or 3 to really significant events`,
     });
 
     return response.choices[0].message.parsed;
-  } catch (error) {
-    console.error('Error while analyzing the news:', error.message);
+  } catch (err) {
+    logger.error('Error while analyzing the news:', {
+      message: err.message,
+      stack: err.stack
+    });
 
-    throw error;
+    throw err;
   }
 }
 

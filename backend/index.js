@@ -1,5 +1,8 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
+const logger = require('./logger');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -13,30 +16,37 @@ app.use(cors());
 
 app.use('/api/v1', routes);
 
-const {APP_PORT, APP_IP, DATABASE_CONNECTION_URI} = process.env
+const {PORT, DATABASE_CONNECTION_URI} = process.env
 
 const start = async () => {
     try {
-        await mongoose.connect(DATABASE_CONNECTION_URI)
+        mongoose.connect(DATABASE_CONNECTION_URI)
             .then(async () => {
-                console.log('Mongodb connected...')
+                logger.info('Mongodb connected...')
+
                 aiNewsAnalyzer.startNewsProcession();
+                screener.start();
 
-                await screener.start();
-
-                app.listen(APP_PORT, () => {
-                    console.log(`Server started at ${APP_PORT}`);
+                app.listen(PORT, () => {
+                    logger.info(`Server started at ${PORT}`);
                 });
             })
             .catch(err => {
-                console.log('Error happened during work of application. Restarting system.', err);
+                logger.error('Error happened during work of application. Restarting system.', {
+                    message: err.message,
+                    stack: err.stack
+                  });
 
+                logger.info('Restarting application in 10 seconds...');
                 setTimeout(() => {
                     start();
                 }, 1000 * 10);
             });
     } catch (err) {
-        console.log('Error happened during starting of application. Shutting down.', err);
+        logger.error('Error happened during starting of application. Shutting down.', {
+            message: err.message,
+            stack: err.stack
+          });
 
         throw err;
     }

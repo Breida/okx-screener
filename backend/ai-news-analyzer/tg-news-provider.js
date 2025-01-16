@@ -4,6 +4,7 @@ const { TelegramClient } = require('telegram');
 const { StringSession } = require('telegram/sessions');
 const { NewMessage } = require('telegram/events');
 const prompt = require('prompt-sync')();
+const logger = require('../logger');
 
 const { TG_APP_ID, TG_APP_HASH, TG_APP_SESSION, TG_ACCOUNT_PHONE_NUMBER } = process.env;
 
@@ -16,14 +17,21 @@ async function authorizeTelegram() {
         await client.start({
             phoneNumber: async () => TG_ACCOUNT_PHONE_NUMBER,
             phoneCode: async () => prompt('Enter the confirmation code: '),
-            onError: (err) => console.error('Authorization error:', err),
+            onError: (err) => logger.error('Authorization error:', {
+                message: err.message,
+                stack: err.stack
+              }),
         });
 
-        console.log('Telegram client initialized successfully.');
+        logger.info('Telegram client initialized successfully.');
 
         return client;
     } catch (err) {
-        console.error('Failed to authorize:', err);
+        logger.error('Failed to authorize:', {
+            message: err.message,
+            stack: err.stack
+          });
+
         throw err;
     }
 }
@@ -33,11 +41,15 @@ async function getChannelHistory(client, channelName, limit = 10) {
         const channel = await client.getEntity(channelName);
         const messages = await client.getMessages(channel, {limit});
 
-        console.log(`Synced last #${limit} tg posts from the channel '${channelName}'.`);
+        logger.info(`Synced last #${limit} tg posts from the channel '${channelName}'.`);
 
         return messages;
     } catch (err) {
-        console.error('Failed to get channel history:', err);
+        logger.error('Failed to get channel history:', {
+            message: err.message,
+            stack: err.stack
+          });
+          
         throw err;
     }
 }
@@ -53,9 +65,13 @@ async function subscribeToChannel(client, channelName, callback) {
             }
         }, new NewMessage({ chats: [channel.id] }));
 
-        console.log(`Subscribed to new messages from ${channelName}.`);
+        logger.info(`Subscribed to new messages from ${channelName}.`);
     } catch (err) {
-        console.error('Failed to subscribe to channel:', err);
+        logger.error('Failed to subscribe to channel:', {
+            message: err.message,
+            stack: err.stack
+          });
+
         throw err;
     }
 }

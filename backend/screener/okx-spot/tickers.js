@@ -1,4 +1,5 @@
 const okx = require('okx-api');
+const logger = require('../../logger');
 
 const client = new okx.RestClient();
 
@@ -7,21 +8,25 @@ const getFuturesTickers = async (retries = 5) => {
         const result = await client.getTickers('SPOT');
 
         if (result.length === 0) {
-            console.warn('No tickers received from API.');
+            logger.warn('No tickers received from API.');
             return [];
         }
 
         const usdtTickers = result.filter(i => i.instId.includes('USDT'));
 
-        console.log('OKX SPOT tickers length: ', usdtTickers.length);
+        logger.info(`OKX SPOT tickers length: ${usdtTickers.length}`);
 
         return usdtTickers;
-    } catch (e) {
-        console.log('Error spot fetching tickers:', e.message);
+    } catch (err) {
+        logger.error('Error fetching spot tickers:', {
+            message: err.message,
+            stack: err.stack
+          });
 
         if (retries > 0) {
-            console.log(`Retrying... Attempts left: ${retries}`);
+            logger.info(`Retrying... Attempts left: ${retries}`);
             await new Promise(resolve => setTimeout(resolve, 1000));
+
             return getFuturesTickers(retries - 1);
         }
 
@@ -29,4 +34,4 @@ const getFuturesTickers = async (retries = 5) => {
     }
 }
 
-module.exports = { getFuturesTickers }
+module.exports = { getFuturesTickers };

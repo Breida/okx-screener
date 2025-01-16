@@ -3,6 +3,7 @@ const router = express.Router();
 const screener = require('./screener');
 const liquidations = require('./screener/liquidations');
 const aiNewsAnalyzer = require('./ai-news-analyzer');
+const logger = require('./logger');
 
 router.get('/okx-futures-tickers', async (req, res) => {
     res.json(screener.okxFutures.getScreenerData());
@@ -20,7 +21,7 @@ router.get('/liquidations', async (req, res) => {
     }
 
     const result = await liquidations.getLiquidations(query.symbol, parseInt(query.timeFrom));
-    console.log('Liquidations request fulfilled.');
+    logger.info(`Liquidations request fulfilled for ${query.timeFrom}.`);
 
     return res.json(result);
 });

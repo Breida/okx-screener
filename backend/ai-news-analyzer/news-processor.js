@@ -1,4 +1,5 @@
 require('dotenv').config();
+const logger = require('../logger');
 
 const {analyzeNews} = require('./ai-analyzer');
 const {authorizeTelegram, getChannelHistory, subscribeToChannel} = require('./tg-news-provider')
@@ -17,14 +18,14 @@ async function startNewsProcession() {
 
             const isExisting = await isNewsInDatabase(internalMessageId);
             if (isExisting) {
-                console.log(`Skipping tg post #${internalMessageId} as it already exist in database.`);
+                logger.info(`Skipping tg post #${internalMessageId} as it already exist in database.`);
                 return;
             }
 
             const analysisState = await analyzeNews(newsText);
 
             if (!analysisState.isValid) {
-                console.log(`Skipping tg post #${internalMessageId} was not interpreted as a piece of news.`);
+                logger.info(`Skipping tg post #${internalMessageId} was not interpreted as a piece of news.`);
                 return;
             }
 
@@ -38,9 +39,13 @@ async function startNewsProcession() {
 
             saveNewsToDatabaseIfNotExists(newsToSave);
         }
-        catch (e) {
-            console.error(`Error happened during procession of message #${internalMessageId}`, e);
-            throw e;
+        catch (err) {
+            logger.error(`Error happened during procession of message #${internalMessageId}`, {
+                message: err.message,
+                stack: err.stack
+              });
+
+            throw err;
         }
     };
 

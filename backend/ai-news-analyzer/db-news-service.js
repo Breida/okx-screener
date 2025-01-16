@@ -1,12 +1,17 @@
 const NewsInfo = require('./models/news-info');
+const logger = require('../logger');
 
 async function isNewsInDatabase(id) {
     try {
         const existingNews = await NewsInfo.findOne({ id });
         return !!existingNews;
-    } catch (error) {
-        console.error(`Error checking news by id #${id} in database:`, error.message);
-        throw error;
+    } catch (err) {
+        logger.error(`Error checking news by id #${id} in database:`, {
+            message: err.message,
+            stack: err.stack
+          });
+
+        throw err;
     }
 }
 
@@ -15,11 +20,16 @@ async function saveNewsToDatabase(newsData) {
         const news = new NewsInfo(newsData);
         const savedNews = await news.save();
 
-        console.log(`Piece of news #${savedNews.id} saved successfully.`);
+        logger.info(`Piece of news #${savedNews.id} saved successfully.`);
+
         return savedNews;
-    } catch (error) {
-        console.error('Error saving news to database:', error.message);
-        throw error;
+    } catch (err) {
+        logger.error('Error saving news to database:', {
+            message: err.message,
+            stack: err.stack
+          });
+
+        throw err;
     }
 }
 
@@ -27,23 +37,32 @@ async function saveNewsToDatabaseIfNotExists(newsData) {
     try {
         const exists = await isNewsInDatabase(newsData.id);
         if (exists) {
-            console.log(`Piece of news ${newsData.id} already exists in database:`, newsData.id);
+            logger.info(`Piece of news ${newsData.id} already exists in database:`, newsData.id);
+
             return;
         }
 
         await saveNewsToDatabase(newsData);
-    } catch (error) {
-        console.error('Error processing news:', error.message);
-        throw error;
+    } catch (err) {
+        logger.error('Error processing news:', {
+            message: err.message,
+            stack: err.stack
+          });
+
+        throw err;
     }
 }
 
 async function getLastNews(limit) {
     try {
         return await NewsInfo.find().sort({date: -1}).limit(limit);
-    } catch (error) {
-        console.error('Error fetching last news:', error.message);
-        throw error;
+    } catch (err) {
+        logger.error('Error fetching last news:', {
+            message: err.message,
+            stack: err.stack
+          });
+
+        throw err;
     }
 }
 

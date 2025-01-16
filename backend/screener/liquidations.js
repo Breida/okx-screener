@@ -1,5 +1,6 @@
 const okx = require('okx-api');
 const models = require('./models');
+const logger = require('../logger');
 
 const startLiquidationsStream = () => {
     const client = new okx.WebsocketClient({market: 'prod'});
@@ -20,7 +21,10 @@ const startLiquidationsStream = () => {
                         side: d.posSide?.toUpperCase(),
                         exchange: 'OKX-FUTURES-SWAP'
                     }).catch(err => {
-                    console.log('Error happened during saving of liquidation:', err?.message);
+                        logger.error('Error happened during saving of liquidation:', {
+                            message: err.message,
+                            stack: err.stack
+                    });
                 });
             });
         });
@@ -39,4 +43,4 @@ const getLiquidations = async (symbol, timeFrom) => {
 module.exports = {
     startLiquidationsStream,
     getLiquidations
-}
+};

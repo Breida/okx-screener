@@ -4,4 +4,4 @@ const getDifferencePercent = require('./difference-percent');
 module.exports =  {
     getAtr,
     getDifferencePercent
-}
+};

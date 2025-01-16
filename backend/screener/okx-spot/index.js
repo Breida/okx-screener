@@ -25,4 +25,4 @@ const start = async () => {
 module.exports  = {
     start,
     getScreenerData
-}
+};

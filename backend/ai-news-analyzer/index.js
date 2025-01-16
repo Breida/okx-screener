@@ -4,4 +4,4 @@ const { getLastNews } = require("./db-news-service");
 module.exports = {
     startNewsProcession,
     getLastNews
-}
+};
