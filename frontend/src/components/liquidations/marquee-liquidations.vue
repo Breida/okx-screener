@@ -23,6 +23,14 @@ const calculateAnimationDuration = () => {
   }
 }
 
+const formatSize = (size: number): number => {
+  if (size >= 1000) {
+    const formattedSize = (size / 1000)
+    return formattedSize
+  }
+  return size
+}
+
 onMounted(() => {
   calculateAnimationDuration()
 })
@@ -44,7 +52,7 @@ watch(() => props.liquidations, () => {
           'text-red': liquidation.side === 'SHORT',
         }"
       >
-         {{ liquidation.symbol }} {{ liquidation.side }} ${{ Math.trunc(liquidation.size * liquidation.price) }} at ${{ liquidation.price }}  |
+         {{ liquidation.symbol }} {{ liquidation.side }} ${{ `${Math.trunc(formatSize(liquidation.size * liquidation.price))}k` }} at ${{ liquidation.price }}  |
       </span>
     </div>
   </div>

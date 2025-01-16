@@ -16,3 +16,15 @@ OKX Screener is a tool for analyzing cryptocurrency trading pairs on the OKX exc
 
 ### Customize the configuration
 See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+
+## Deploy backend
+
+1. Create App Service in Azure
+2. zip backend
+3. Run command `az webapp deployment source config-zip --resource-group okx-screener-rg  --name okx-screener-backend --src ./backend.zip`
+
+## Deploy frontend
+
+1. Create Static Web App resource in Azure resource group
+2. Build frontend using `npm run build`
+2. From `dist` folder run `swa deploy ./spa --env production --app-name okx-screener-frontend`
